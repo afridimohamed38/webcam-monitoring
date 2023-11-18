@@ -22,6 +22,11 @@ def clean_folder():
         os.remove(image)
     print("clean folder ended")
 
+
+clean_thread = Thread(target=clean_folder)
+clean_thread.daemon = True
+clean_thread.start()
+
 while True:
     status = 0
     check, frame = video.read()
@@ -58,23 +63,16 @@ while True:
 
     if left_status_list[0] == 1 and left_status_list[1] == 0:
         # declaring threads
-        email_thread = Thread(target=send_email, args=(object_image, ))
+        email_thread = Thread(target=send_email, args=(object_image,))
         email_thread.daemon = True
-        clean_thread = Thread(target=clean_folder)
-        clean_thread.daemon = True
 
         # calling threads
         email_thread.start()
 
-
-
     cv2.imshow("My video", frame)
 
     key = cv2.waitKey(1)
-
     if key == ord("q"):
         break
 
 video.release()
-
-clean_thread.start()
